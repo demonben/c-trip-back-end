@@ -1,0 +1,22 @@
+{
+  "name": "ctrip-back-end",
+  "version": "1.0.0",
+  "description": "ITC group project",
+  "main": "connect.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eavior/ctrip-back-end.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eavior/ctrip-back-end/issues"
+  },
+  "homepage": "https://github.com/eavior/ctrip-back-end#readme",
+  "dependencies": {
+    "mongodb": "^3.6.6"
+  }
+}
