@@ -1,5 +1,5 @@
 const path = require('path');
-
+const mongoose = require('mongoose');  
 const result = require('dotenv').config({
   path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
 });
@@ -38,10 +38,6 @@ app.use('/login', require('./routes/login'));
 const host = process.env.HOST;
 const port = +process.env.PORT;
 
-app.listen(port, host, () => {
-  console.log(`server is listening at http://${host}:${port}`);
-});
-
 // postgrator
 //   .migrate()
 //   .then((result) => {
@@ -51,3 +47,18 @@ app.listen(port, host, () => {
 //     });
 //   })
 //   .catch((error) => console.error(error));
+
+const url =
+  'mongodb+srv://admin:admin@cluster0.edkcm.mongodb.net/main_db?retryWrites=true&w=majority';
+  
+mongoose
+  .connect(url, { useNewUrlParser: true,  useUnifiedTopology: true })
+  .then(() => {
+    app.listen(port, host, () => {
+      console.log(`server is listening at http://${host}:${port}`);
+      console.log('MongoDB connected')
+    });
+  })
+  .catch(() => {
+    console.log('Fail to connect to DB!!!!');
+  })
