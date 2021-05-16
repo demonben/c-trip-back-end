@@ -23,16 +23,16 @@ router.put("/update", async (req, res) => {
       error: "No user information provided",
     });
   }
-  
-    // Model.findOneAndUpdate(conditions, update, options, (error, doc) => {
-    // error: any errors that occurred
-    // doc: the document before updates are applied if `new: false`, or after updates if `new = true`
-    // });
+
+  // Model.findOneAndUpdate(conditions, update, options, (error, doc) => {
+  // error: any errors that occurred
+  // doc: the document before updates are applied if `new: false`, or after updates if `new = true`
+  // });
 
   User.findOneAndUpdate(
     { _id: req.body.id },
-    { $set: req.body }, 
-    { useFindAndModify: false }, 
+    { $set: req.body },
+    { useFindAndModify: false },
     (err, user) => {
       if (err) {
         return res.status(404).json({
@@ -40,7 +40,7 @@ router.put("/update", async (req, res) => {
           message: "User not found!",
         });
       }
-      
+
       if ("firstName" in req.body) user.firstName = body.firstName;
       if ("lastName" in req.body) user.lastName = body.lastName;
       if ("email" in req.body) user.email = body.email;
@@ -52,7 +52,7 @@ router.put("/update", async (req, res) => {
         .save()
         .then(() => {
           return res.status(200).send({
-            success: true,              //check with front what they want to be returned.
+            success: true, //check with front what they want to be returned.
             id: user._id,
             message: "User updated!",
           });
@@ -67,11 +67,35 @@ router.put("/update", async (req, res) => {
   );
 });
 
+// need to add auth middleware
+router.get("/", async (req, res) => {
+  await User.find({}, (err, users) => {
+    if (err) {
+      return res.send({
+        success: false,
+        error: err,
+      });
+    }
+    if (!users.length) {
+      return res.status(404).json({
+        success: false,
+        error: "No user found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      users: users
+    });
+  }).catch(err => console.log(err));
+});
+
+
+
 module.exports = router;
 
 
 
-
+/****************************************************************************/
 // function isSameUser(req, res, next) {
 //   if (req.user.id !== req.params.userId) {
 //     res
@@ -93,4 +117,3 @@ module.exports = router;
 //   }
 //   next();
 // }
-
