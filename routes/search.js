@@ -1,5 +1,5 @@
 const express = require('express');
-const { getSomething } = require('../data/notes');
+const { getSearchResult } = require('../data/search');
 const { checkIfAdmin } = require('../data/users');
 const { upload } = require('../middlewares/multipart');
 const { auth } = require('../middlewares/auth');
@@ -24,15 +24,24 @@ function isAdmin(req, res, next) {
 router.get('/?', async (req, res) => {
   const { place, checkIn, checkOut, adults } = req.query;
   // const { status } = req.body;
-  const results = await getAdvancedSearchResult(
-    name,
-    type,
-    status,
-    height,
-    weight
-  );
+  console.log(place, checkIn, checkOut, adults);
+  const results = await getSearchResult(place, checkIn, checkOut, adults);
   res.status(200).send({ searchResult: results });
 });
+
+//Frontend:
+// const onSubmit = async (event) => {
+//   event.preventDefault();
+//   const searchQuery = `place=${searchByPlace}&checkIn=${searchByCheckIn}&checkOut=${searchByCheckOut}&adults=${searchByAdults}`;
+
+//   try {
+//     const search = await searchPets(searchQuery, auth.token);
+//     setSearchPerformed(true);
+//     setSearchResult(search.searchResult);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 // const NewPetValidationSchema = S.object()
 //   .prop('name', S.string().minLength(1).required())
