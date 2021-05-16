@@ -22,10 +22,18 @@ function isAdmin(req, res, next) {
 }
 
 router.get('/?', async (req, res) => {
-  const { place, checkIn, checkOut, adults } = req.query;
+  const { place, checkIn, checkOut, adults1 } = req.query;
   // const { status } = req.body;
-  console.log(place, checkIn, checkOut, adults);
-  const results = await getSearchResult(place, checkIn, checkOut, adults);
+  console.log(place, checkIn, checkOut, adults1);
+  const results = await getSearchResult(
+    place,
+    checkIn,
+    checkOut,
+    adults1,
+    function (myDataResponse) {
+      res.send(myDataResponse);
+    }
+  );
   res.status(200).send({ searchResult: results });
 });
 
