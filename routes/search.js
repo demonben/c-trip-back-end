@@ -1,5 +1,5 @@
 const express = require('express');
-const { getSearchResult } = require('../data/search');
+const { getSearchResult, getPropertiesDetails } = require('../data/search');
 const { checkIfAdmin } = require('../data/users');
 const { upload } = require('../middlewares/multipart');
 const { auth } = require('../middlewares/auth');
@@ -21,21 +21,110 @@ function isAdmin(req, res, next) {
   next();
 }
 
+// router.get('/?', async (req, res) => {
+//   const { place, checkIn, checkOut, adults1 } = req.query;
+//   // const { status } = req.body;
+//   console.log(place, checkIn, checkOut, adults1);
+//   const results = await getSearchResult(
+//     place,
+//     checkIn,
+//     checkOut,
+//     adults1,
+//     function (myDataResponse) {
+//       res.send(myDataResponse);
+//     }
+//   );
+//   res.status(200).send({ searchResult: results });
+// });
+
+// function getHotels(req, res, next) {
+// const { place } = req.query;
+//   const hotels = await getSearchResult(place, function (myDataResponse) {
+//     return myDataResponse;
+//   });
+//   if (!admin) {
+//     res.status(403).send({
+//       message: 'Only administrators can perform this action',
+//     });
+//     return;
+//   }
+//   next();
+// }
+
+// search query: 127.0.0.1:5500/search?place=Jerusalem&checkIn=2021-06-01&checkOut=2021-06-03&adults1=1
+
 router.get('/?', async (req, res) => {
   const { place, checkIn, checkOut, adults1 } = req.query;
   // const { status } = req.body;
   console.log(place, checkIn, checkOut, adults1);
-  const results = await getSearchResult(
-    place,
-    checkIn,
-    checkOut,
-    adults1,
-    function (myDataResponse) {
-      res.send(myDataResponse);
-    }
-  );
-  res.status(200).send({ searchResult: results });
+  try {
+    const hotels = await getSearchResult(place, function (myDataResponse) {
+      let resultArray;
+      for (let i = 0; i < myDataResponse.length; i++) {
+        getPropertiesDetails(
+          myDataResponse[i],
+          checkIn,
+          checkOut,
+          adults1,
+          function (myDataResponse2) {
+            // resultArray.push(myDataResponse2);
+            resultArray += myDataResponse2;
+          }
+        );
+        console.log(resultArray);
+        console.log('length: ' + myDataResponse.length + 'now: ' + i);
+        if (i === myDataResponse.length - 1)
+          res.status(200).send({ searchResult: resultArray });
+      }
+    });
+  } catch (error) {
+    return error;
+  }
 });
+
+//   try {
+//     const resultArray = [];
+//     const hotels = await getSearchResult(place, function (myDataResponse) {
+//       myDataResponse.forEach(async (hotel) => {
+//         const hotelData = getPropertiesDetails(
+//           hotel,
+//           checkIn,
+//           checkOut,
+//           adults1,
+//           function (myDataResponse2) {
+//             resultArray.push(myDataResponse2);
+//             console.log(resultArray);
+//           }
+//         );
+//       });
+//     });
+//     res.status(200).send({ searchResult: resultArray });
+//   } catch (error) {
+//     console.log(error);
+//     res.sendStatus(500);
+//   }
+// });
+
+// });)
+
+// res.status(200).send({ searchResult: results });
+// });
+
+// router.get('/?', async (req, res) => {
+//   const { place, checkIn, checkOut, adults1 } = req.query;
+//   // const { status } = req.body;
+//   console.log(139009, checkIn, checkOut, adults1);
+//   const results = await getPropertiesDetails(
+//     139009,
+//     checkIn,
+//     checkOut,
+//     adults1,
+//     function (myDataResponse) {
+//       res.send(myDataResponse);
+//     }
+//   );
+//   // res.status(200).send({ searchResult: results });
+// });
 
 //Frontend:
 // const onSubmit = async (event) => {
