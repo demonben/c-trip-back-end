@@ -1,5 +1,10 @@
 const express = require('express');
-const { getSearchResult, getPropertiesDetails } = require('../data/search');
+const {
+  getSearchResult,
+  getPropertiesDetails,
+  testFunction,
+  getHotelsDetails,
+} = require('../data/search');
 const { checkIfAdmin } = require('../data/users');
 const { upload } = require('../middlewares/multipart');
 const { auth } = require('../middlewares/auth');
@@ -58,25 +63,61 @@ router.get('/?', async (req, res) => {
   // const { status } = req.body;
   console.log(place, checkIn, checkOut, adults1);
   try {
-    const hotels = await getSearchResult(place, function (myDataResponse) {
-      let resultArray;
-      for (let i = 0; i < myDataResponse.length; i++) {
-        getPropertiesDetails(
-          myDataResponse[i],
-          checkIn,
-          checkOut,
-          adults1,
-          function (myDataResponse2) {
-            // resultArray.push(myDataResponse2);
-            resultArray += myDataResponse2;
-          }
-        );
-        console.log(resultArray);
-        console.log('length: ' + myDataResponse.length + 'now: ' + i);
-        if (i === myDataResponse.length - 1)
-          res.status(200).send({ searchResult: resultArray });
+    const hotels = getSearchResult(
+      place,
+      checkIn,
+      checkOut,
+      adults1,
+      function (myDataResponse) {
+        // console.log(myDataResponse);
+        // testFunction(myDataResponse, function (myDataResponse2) {
+        // getPropertiesDetails(
+        //   myDataResponse[1],
+        //   checkIn,
+        //   checkOut,
+        //   adults1,
+        //   function (myDataResponse2) {
+        //     console.log(myDataResponse2);
+        res.status(200).send({ results: myDataResponse });
+        //   }
+        // );
+
+        // const result = getHotelsDetails(
+        //   myDataResponse,
+        //   checkIn,
+        //   checkOut,
+        //   adults1
+        //   // function (myDataResponse2) {
+        //   //   console.log(myDataResponse2);
+        //   //   res.status(200).send({ searchResult: myDataResponse2 });
+        //   // }
+        // );
+        // console.log('result: ' + result);
+
+        // res.status(200).send({ searchResult: myDataResponse });
       }
-    });
+    );
+    // console.log(hotels);
+    // console.log(hotels.myDataResponse);
+    // res.status(200).send({ searchResult: hotels });
+    //   let resultArray;
+    //   for (let i = 0; i < myDataResponse.length; i++) {
+    //     getPropertiesDetails(
+    //       myDataResponse[i],
+    //       checkIn,
+    //       checkOut,
+    //       adults1,
+    //       function (myDataResponse2) {
+    //         // resultArray.push(myDataResponse2);
+    //         resultArray += myDataResponse2;
+    //       }
+    //     );
+    //     console.log(resultArray);
+    //     console.log('length: ' + myDataResponse.length + 'now: ' + i);
+    //     if (i === myDataResponse.length - 1)
+    //       res.status(200).send({ searchResult: resultArray });
+    //   }
+    // });
   } catch (error) {
     return error;
   }

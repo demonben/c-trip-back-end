@@ -5,33 +5,231 @@
 
 var unirest = require('unirest');
 
-const rapidKey = '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126'; // Elisha
-// const rapidKey = '7f2808d44dmshddd4871847ac607p11876cjsn70d14a52eb70'; // Marc
+// const rapidKey = '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126'; // Elisha
+const rapidKey = '7f2808d44dmshddd4871847ac607p11876cjsn70d14a52eb70'; // Marc
 
 const resultArray = [];
 
-async function getSearchResult(place, callback) {
-  let data = await unirest
-    .get('https://hotels4.p.rapidapi.com/locations/search')
-    .query({
-      query: place,
-      locale: 'en_US',
-    })
-    .headers({
-      'x-rapidapi-key': rapidKey,
-      'x-rapidapi-host': 'hotels4.p.rapidapi.com',
-      useQueryString: true,
-    })
-    .end(function (result) {
-      // console.log(result.body.suggestions[1].entities);
-      const hotels = [];
-      result.body.suggestions[1].entities.slice(-2).forEach(async (entity) => {
-        hotels.push(entity.destinationId);
-      });
+async function getSearchResult(place, checkIn, checkOut, adults1, callback) {
+  let hotels = [];
 
-      callback(hotels);
-    });
+  var req = unirest('GET', 'https://hotels4.p.rapidapi.com/locations/search');
+
+  req.query({
+    query: place,
+    locale: 'en_US',
+  });
+
+  req.headers({
+    'x-rapidapi-key': rapidKey,
+    'x-rapidapi-host': 'hotels4.p.rapidapi.com',
+    useQueryString: true,
+  });
+
+  req.end(async function (result) {
+    // console.log(result.body.suggestions[1].entities);
+    // console.log(result);
+    const hotel = result.body.suggestions[1].entities;
+    if (hotel.length === 0) callback([]);
+    const amountToShow = 2;
+    for (let i = 0; i < amountToShow; i++) {
+      console.log(hotel[i].destinationId);
+      getPropertiesDetails(
+        hotel[i].destinationId,
+        checkIn,
+        checkOut,
+        adults1,
+        function (myDataResponse) {
+          hotels.push(myDataResponse);
+          console.log(myDataResponse);
+          console.log(hotels.length);
+          if (hotels.length === amountToShow) callback(hotels);
+        }
+      );
+    }
+
+    //   .slice(-2)
+    //   .forEach((entity) => {
+    //     getPropertiesDetails(
+    //       entity.destinationId,
+    //       // checkIn,
+    //       // checkOut,
+    //       // adults1,
+    //       function (myDataResponse) {
+    //         // console.log(myDataResponse);
+    //         hotels.push(myDataResponse);
+    //         console.log(hotels);
+    //         callback(hotels);
+    //       }
+    //     );
+    //     // hotels.push(entity.destinationId);
+    //   });
+    // hotels = hotels;
+    // console.log(hotel);
+  });
+
+  // .end(function (result) {
+  //   hotels = hotels;
+  //   callback(hotels);
+  // });
 }
+
+exports.getSearchResult = getSearchResult;
+
+async function getHotelsDetails(destinationId, checkIn, checkOut, adults1) {
+  let finalResult = [];
+  let hotels = await destinationId.forEach((hotel) => {
+    const details = getPropertiesDetails(
+      hotel,
+      checkIn,
+      checkOut,
+      adults1,
+      function (myDataResponse) {
+        finalResult.push(myDataResponse);
+      }
+    );
+  });
+  finalResult = finalResult;
+  console.log('finalResult: ' + finalResult);
+  return finalResult;
+
+  // let data = await unirest
+  //   .get('https://hotels4.p.rapidapi.com/locations/search')
+  //   .query({
+  //     query: place,
+  //     locale: 'en_US',
+  //   })
+  //   .headers({
+  //     'x-rapidapi-key': rapidKey,
+  //     'x-rapidapi-host': 'hotels4.p.rapidapi.com',
+  //     useQueryString: true,
+  //   })
+  //   .end(function (result) {
+  //     // console.log(result.body.suggestions[1].entities);
+  //     const hotels = [];
+  //     result.body.suggestions[1].entities.slice(-2).forEach(async (entity) => {
+  //       hotels.push(entity.destinationId);
+  //     });
+
+  //     callback(hotels);
+  //   });
+}
+
+exports.getHotelsDetails = getHotelsDetails;
+
+async function getPropertiesDetails(
+  destinationId,
+  checkIn,
+  checkOut,
+  adults1,
+  callback
+) {
+  // console.log(destinationId, checkIn, checkOut, adults1);
+
+  let searchResult = [];
+  let imageArray = [];
+  var req = unirest(
+    'GET',
+    'https://hotels4.p.rapidapi.com/properties/get-hotel-photos'
+  );
+
+  req.query({
+    id: destinationId,
+  });
+
+  req.headers({
+    'x-rapidapi-key': rapidKey,
+    'x-rapidapi-host': 'hotels4.p.rapidapi.com',
+    useQueryString: true,
+  });
+
+  // req.end(function (res) {
+  //   if (res.error) throw new Error(res.error);
+
+  //   console.log(res.body);
+  // });
+
+  req.end(async function (res) {
+    console.log('images for ' + destinationId);
+    // console.log(res.body.hotelImages);
+    const images = await res.body.hotelImages.forEach(
+      (image) => imageArray.push(image.baseUrl.replace('{size}', 'z')) // Result: the hotel/destinationId's
+    );
+
+    // res.send({ images: images });
+    imageArray = imageArray;
+  });
+
+  var req = unirest(
+    'GET',
+    'https://hotels4.p.rapidapi.com/properties/get-details'
+  );
+
+  req.query({
+    id: destinationId.toString(),
+    checkIn: checkIn,
+    checkOut: checkOut,
+    currency: 'USD',
+    locale: 'en_US',
+    adults1: adults1,
+  });
+
+  req.headers({
+    'x-rapidapi-key': rapidKey,
+    'x-rapidapi-host': 'hotels4.p.rapidapi.com',
+    useQueryString: true,
+  });
+
+  //     res.on('data', function(data) {
+  //         body += data;
+  //     });
+  //     res.on('end', function() {
+  //         serverRes.writeHead(200, {'Content-Type': 'text/plain'});
+  //         serverRes.end(body);
+  //     });
+  // });
+
+  req.end(function (res) {
+    if (res.error) throw new Error(res.error);
+
+    const name = res.body.data.body.propertyDescription.name;
+    const address = res.body.data.body.propertyDescription.address.fullAddress;
+    const tagLine = res.body.data.body.propertyDescription.tagline[0];
+    const rating = res.body.data.body.propertyDescription.starRating;
+    let price;
+    let priceInfo;
+    let totalPrice;
+    console.log(res.body.data.body.propertyDescription.featuredPrice);
+    if (res.body.data.body.propertyDescription.featuredPrice) {
+      price = res.body.data.body.propertyDescription.featuredPrice.currentPrice;
+      priceInfo =
+        res.body.data.body.propertyDescription.featuredPrice.priceInfo;
+      totalPrice =
+        res.body.data.body.propertyDescription.featuredPrice.totalPricePerStay;
+    } else {
+      price = 'no result';
+      priceInfo = 'no result';
+      totalPrice = 'no result';
+    }
+    result = {
+      locationId: destinationId,
+      name: name,
+      address: address,
+      tagLine: tagLine,
+      rating: rating,
+      price: price,
+      priceInfo: priceInfo,
+      totalPrice: totalPrice,
+      images: imageArray,
+    };
+    searchResult = result;
+    callback(searchResult);
+    // console.log(result);
+    // res.send(result);
+    // resultArray.push(result);
+  });
+}
+exports.getPropertiesDetails = getPropertiesDetails;
 
 // result.body.suggestions[1].entities;
 // console.log(result);
@@ -79,98 +277,104 @@ async function getSearchResult(place, callback) {
 // return console.log({ result: resultArray });
 // }
 
-exports.getSearchResult = getSearchResult;
-
-async function getPropertiesDetails(
-  destinationId,
-  checkIn,
-  checkOut,
-  adults1,
-  callback
-) {
-  console.log(destinationId, checkIn, checkOut, adults1);
-
-  let imageArray = [];
-  var req = unirest(
-    'GET',
-    'https://hotels4.p.rapidapi.com/properties/get-hotel-photos'
-  );
-
-  req.query({
-    id: destinationId,
-  });
-
-  req.headers({
-    'x-rapidapi-key': '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126',
-    'x-rapidapi-host': 'hotels4.p.rapidapi.com',
-    useQueryString: true,
-  });
-
-  // req.end(function (res) {
-  //   if (res.error) throw new Error(res.error);
-
-  //   console.log(res.body);
-  // });
-
-  req.end(function (res) {
-    const images = res.body.hotelImages.forEach(
-      (image) => imageArray.push(image.baseUrl.replace('{size}', 'z')) // Result: the hotel/destinationId's
-    );
-
-    // res.send({ images: images });
-    imageArray = imageArray;
-  });
-
-  var req = unirest(
-    'GET',
-    'https://hotels4.p.rapidapi.com/properties/get-details'
-  );
-
-  req.query({
-    id: destinationId.toString(),
-    checkIn: checkIn,
-    checkOut: checkOut,
-    currency: 'USD',
-    locale: 'en_US',
-    adults1: adults1,
-  });
-
-  req.headers({
-    'x-rapidapi-key': '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126',
-    'x-rapidapi-host': 'hotels4.p.rapidapi.com',
-    useQueryString: true,
-  });
-
-  //     res.on('data', function(data) {
-  //         body += data;
-  //     });
-  //     res.on('end', function() {
-  //         serverRes.writeHead(200, {'Content-Type': 'text/plain'});
-  //         serverRes.end(body);
-  //     });
-  // });
-
-  req.end(function (res) {
-    if (res.error) throw new Error(res.error);
-    result = {
-      locationId: destinationId,
-      name: res.body.data.body.propertyDescription.name,
-      address: res.body.data.body.propertyDescription.address.fullAddress,
-      tagLine: res.body.data.body.propertyDescription.tagline[0],
-      rating: res.body.data.body.propertyDescription.starRating,
-      price: res.body.data.body.propertyDescription.featuredPrice.currentPrice,
-      priceInfo: res.body.data.body.propertyDescription.featuredPrice.priceInfo,
-      totalPrice:
-        res.body.data.body.propertyDescription.featuredPrice.totalPricePerStay,
-      images: imageArray,
-    };
-    callback(result);
-    // console.log(result);
-    // res.send(result);
-    // resultArray.push(result);
-  });
+async function testFunction(test, callback) {
+  console.log(test);
+  const test2 = { name: 'test' };
+  callback(test2);
 }
-exports.getPropertiesDetails = getPropertiesDetails;
+
+exports.testFunction = testFunction;
+
+// async function getPropertiesDetails(
+//   destinationId,
+//   checkIn,
+//   checkOut,
+//   adults1,
+//   callback
+// ) {
+//   console.log(destinationId, checkIn, checkOut, adults1);
+
+//   let imageArray = [];
+//   var req = unirest(
+//     'GET',
+//     'https://hotels4.p.rapidapi.com/properties/get-hotel-photos'
+//   );
+
+//   req.query({
+//     id: destinationId,
+//   });
+
+//   req.headers({
+//     'x-rapidapi-key': '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126',
+//     'x-rapidapi-host': 'hotels4.p.rapidapi.com',
+//     useQueryString: true,
+//   });
+
+//   // req.end(function (res) {
+//   //   if (res.error) throw new Error(res.error);
+
+//   //   console.log(res.body);
+//   // });
+
+//   req.end(function (res) {
+//     const images = res.body.hotelImages.forEach(
+//       (image) => imageArray.push(image.baseUrl.replace('{size}', 'z')) // Result: the hotel/destinationId's
+//     );
+
+//     // res.send({ images: images });
+//     imageArray = imageArray;
+//   });
+
+//   var req = unirest(
+//     'GET',
+//     'https://hotels4.p.rapidapi.com/properties/get-details'
+//   );
+
+//   req.query({
+//     id: destinationId.toString(),
+//     checkIn: checkIn,
+//     checkOut: checkOut,
+//     currency: 'USD',
+//     locale: 'en_US',
+//     adults1: adults1,
+//   });
+
+//   req.headers({
+//     'x-rapidapi-key': '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126',
+//     'x-rapidapi-host': 'hotels4.p.rapidapi.com',
+//     useQueryString: true,
+//   });
+
+//   //     res.on('data', function(data) {
+//   //         body += data;
+//   //     });
+//   //     res.on('end', function() {
+//   //         serverRes.writeHead(200, {'Content-Type': 'text/plain'});
+//   //         serverRes.end(body);
+//   //     });
+//   // });
+
+//   req.end(function (res) {
+//     if (res.error) throw new Error(res.error);
+//     result = {
+//       locationId: destinationId,
+//       name: res.body.data.body.propertyDescription.name,
+//       address: res.body.data.body.propertyDescription.address.fullAddress,
+//       tagLine: res.body.data.body.propertyDescription.tagline[0],
+//       rating: res.body.data.body.propertyDescription.starRating,
+//       // price: res.body.data.body.propertyDescription.featuredPrice.currentPrice,
+//       // priceInfo: res.body.data.body.propertyDescription.featuredPrice.priceInfo,
+//       // totalPrice:
+//       // res.body.data.body.propertyDescription.featuredPrice.totalPricePerStay,
+//       images: imageArray,
+//     };
+//     callback(result);
+//     // console.log(result);
+//     // res.send(result);
+//     // resultArray.push(result);
+//   });
+// }
+// exports.getPropertiesDetails = getPropertiesDetails;
 
 // async function getPropertiesPhotos() {
 
@@ -1236,3 +1440,216 @@ const testtt = [
     ],
   })
 ];
+
+const asdf = {
+  term: 'Jerusaldem',
+  moresuggestions: 25,
+  autoSuggestInstance: null,
+  trackingID: '60a2d3deeedfb3d3a32783913326e156',
+  misspellingfallback: false,
+  suggestions: [
+    {
+      group: 'CITY_GROUP',
+      entities: [
+        {
+          geoId: '1727',
+          destinationId: '1633057',
+          landmarkCityDestinationId: null,
+          type: 'CITY',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.78056207219521,
+          longitude: 35.21307484443473,
+          searchDetail: null,
+          caption: 'Jerusalem, Israel',
+          name: 'Jerusalem',
+        },
+        {
+          geoId: '553248633981712548',
+          destinationId: '10873726',
+          landmarkCityDestinationId: null,
+          type: 'NEIGHBORHOOD',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.779857122285307,
+          longitude: 35.21713715893853,
+          searchDetail: null,
+          caption:
+            'Jerusalem City Centre, Jerusalem, Jerusalem District, Israel',
+          name: 'Jerusalem City Centre',
+        },
+        {
+          geoId: '6261673',
+          destinationId: '1767644',
+          landmarkCityDestinationId: null,
+          type: 'NEIGHBORHOOD',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.77809958780794,
+          longitude: 35.2321948616151,
+          searchDetail: null,
+          caption: 'Old City, Jerusalem, Jerusalem District',
+          name: 'Old City',
+        },
+        {
+          geoId: '6004059',
+          destinationId: '1808983',
+          landmarkCityDestinationId: null,
+          type: 'CITY',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.77535575598083,
+          longitude: 35.23304290002579,
+          searchDetail: null,
+          caption: 'Jewish Quarter, Jerusalem, Jerusalem District',
+          name: 'Jewish Quarter',
+        },
+        {
+          geoId: '553248635964998432',
+          destinationId: '12484461',
+          landmarkCityDestinationId: null,
+          type: 'NEIGHBORHOOD',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.778961951148734,
+          longitude: 35.22008482978834,
+          searchDetail: null,
+          caption: 'Mamilla, Jerusalem, Jerusalem District, Israel',
+          name: 'Mamilla',
+        },
+        {
+          geoId: '553248634382974174',
+          destinationId: '10919130',
+          landmarkCityDestinationId: null,
+          type: 'CITY',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: -33.97705126211297,
+          longitude: 137.71450253438917,
+          searchDetail: null,
+          caption: 'Jerusalem, South Australia, Australia',
+          name: 'Jerusalem',
+        },
+        {
+          geoId: '3000453159',
+          destinationId: '10425155',
+          landmarkCityDestinationId: null,
+          type: 'CITY',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 39.851742,
+          longitude: -81.092331,
+          searchDetail: null,
+          caption: 'Jerusalem, Ohio, United States of America',
+          name: 'Jerusalem',
+        },
+        {
+          geoId: '553248635976392090',
+          destinationId: '12527621',
+          landmarkCityDestinationId: null,
+          type: 'CITY',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 41.37676849999999,
+          longitude: -71.51755749999998,
+          searchDetail: null,
+          caption:
+            'Jerusalem, South Kingstown, Rhode Island, United States of America',
+          name: 'Jerusalem',
+        },
+        {
+          geoId: '6144457',
+          destinationId: '1696356',
+          landmarkCityDestinationId: null,
+          type: 'CITY',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.817947672921875,
+          longitude: 35.11080402535929,
+          searchDetail: null,
+          caption:
+            "Ma'ale Hachamisha, Mateh Yehuda, Jerusalem District, Israel",
+          name: "Ma'ale Hachamisha",
+        },
+        {
+          geoId: '553248635964996642',
+          destinationId: '11411088',
+          landmarkCityDestinationId: null,
+          type: 'NEIGHBORHOOD',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.741029338773664,
+          longitude: 35.21869921847562,
+          searchDetail: null,
+          caption: 'Ramat Rachel, Jerusalem, Jerusalem District, Israel',
+          name: 'Ramat Rachel',
+        },
+      ],
+    },
+    { group: 'HOTEL_GROUP', entities: [] },
+    {
+      group: 'LANDMARK_GROUP',
+      entities: [
+        {
+          geoId: '6167116',
+          destinationId: '1720696',
+          landmarkCityDestinationId: '1633057',
+          type: 'LANDMARK',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.775852,
+          longitude: 35.217281,
+          searchDetail: null,
+          caption:
+            'Jerusalem Great Synagogue, Jerusalem, Jerusalem District, Israel',
+          name: 'Jerusalem Great Synagogue',
+        },
+        {
+          geoId: '553248621561088098',
+          destinationId: '10447378',
+          landmarkCityDestinationId: '699178',
+          type: 'LANDMARK',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 32.074720614276885,
+          longitude: 34.7645598930899,
+          searchDetail: null,
+          caption: 'Jerusalem Beach, Tel Aviv, Tel Aviv District, Israel',
+          name: 'Jerusalem Beach',
+        },
+        {
+          geoId: '553248621532390616',
+          destinationId: '10603041',
+          landmarkCityDestinationId: '1633057',
+          type: 'LANDMARK',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.774411,
+          longitude: 35.222045,
+          searchDetail: null,
+          caption:
+            'Jerusalem International YMCA, Jerusalem, Jerusalem District, Israel',
+          name: 'Jerusalem International YMCA',
+        },
+      ],
+    },
+    {
+      group: 'TRANSPORT_GROUP',
+      entities: [
+        {
+          geoId: '6262219',
+          destinationId: '1767974',
+          landmarkCityDestinationId: null,
+          type: 'TRAIN_STATION',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.747945,
+          longitude: 35.188565,
+          searchDetail: null,
+          caption:
+            'Jerusalem Malha Station, Jerusalem, Jerusalem District, Israel',
+          name: 'Jerusalem Malha Station',
+        },
+        {
+          geoId: '6182035',
+          destinationId: '1728087',
+          landmarkCityDestinationId: null,
+          type: 'METRO_STATION',
+          redirectPage: 'DEFAULT_PAGE',
+          latitude: 31.81939,
+          longitude: 35.240048,
+          searchDetail: null,
+          caption: "Yekuti'el Adam Station, Jerusalem, Jerusalem District",
+          name: "Yekuti'el Adam Station",
+        },
+      ],
+    },
+  ],
+  geocodeFallback: false,
+};
