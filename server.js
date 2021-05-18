@@ -49,8 +49,7 @@ const port = +process.env.PORT;
 //   })
 //   .catch((error) => console.error(error));
 
-const url =
-  'mongodb+srv://admin:admin@cluster0.edkcm.mongodb.net/main_db?retryWrites=true&w=majority';
+const url = process.env.MONGO_URL;
 
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })

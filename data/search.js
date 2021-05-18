@@ -1,8 +1,6 @@
 var unirest = require('unirest');
 
-// const rapidKey = '58ae950b1bmsh14bcee45d107fe4p1b83e7jsne1cab43a1126'; // Elisha
-const rapidKey = '7f2808d44dmshddd4871847ac607p11876cjsn70d14a52eb70'; // Marc
-
+const rapidKey = process.env.API_KEY;
 const resultArray = [];
 
 async function getSearchResult(place, checkIn, checkOut, adults1, callback) {
