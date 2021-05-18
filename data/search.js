@@ -19,7 +19,7 @@ async function getSearchResult(place, checkIn, checkOut, adults1, callback) {
   });
 
   req.end(async function (result) {
-    if (res.error) callback(error);
+    if (result.error) callback(error);
     const hotel = result.body.suggestions[1].entities;
     if (hotel.length === 0) callback([]);
     const amountToShow = 3;
