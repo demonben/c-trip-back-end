@@ -1,26 +1,25 @@
-const express = require("express");
-const { user } = require("../data/users");
-const jwt = require("jsonwebtoken");
-const { auth } = require("../middlewares/auth");
-const User = require("../models/user-model");
-const bcrypt = require("bcrypt");
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const { auth } = require('../middlewares/auth');
+const User = require('../models/user-model');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
 // need to add auth middleware
-router.get("/:userId", async (req, res) => {
+router.get('/:userId', async (req, res) => {
   const { userId } = req.params;
   const result = await User.findById(userId);
   res.status(200).send({ user: result });
 });
 
-router.put("/update", async (req, res) => {
+router.put('/update', async (req, res) => {
   const body = req.body;
 
   if (!body || Object.keys(body).length === 0) {
     return res.status(400).json({
       success: false,
-      error: "No user information provided",
+      error: 'No user information provided',
     });
   }
 
@@ -37,15 +36,15 @@ router.put("/update", async (req, res) => {
       if (err) {
         return res.status(404).json({
           err,
-          message: "User not found!",
+          message: 'User not found!',
         });
       }
 
-      if ("firstName" in req.body) user.firstName = body.firstName;
-      if ("lastName" in req.body) user.lastName = body.lastName;
-      if ("email" in req.body) user.email = body.email;
-      if ("password" in req.body) user.password = body.password;
-      if ("phoneNumber" in req.body) user.phoneNumber = body.phoneNumber;
+      if ('firstName' in req.body) user.firstName = body.firstName;
+      if ('lastName' in req.body) user.lastName = body.lastName;
+      if ('email' in req.body) user.email = body.email;
+      if ('password' in req.body) user.password = body.password;
+      if ('phoneNumber' in req.body) user.phoneNumber = body.phoneNumber;
       // if ('bio' in req.body) user.bio = body.bio
 
       user
@@ -54,13 +53,13 @@ router.put("/update", async (req, res) => {
           return res.status(200).send({
             success: true, //check with front what they want to be returned.
             id: user._id,
-            message: "User updated!",
+            message: 'User updated!',
           });
         })
         .catch((error) => {
           return res.status(404).send({
             error,
-            message: "User not updated!",
+            message: 'User not updated!',
           });
         });
     }
@@ -68,7 +67,7 @@ router.put("/update", async (req, res) => {
 });
 
 // need to add auth middleware
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   await User.find({}, (err, users) => {
     if (err) {
       return res.send({
@@ -79,21 +78,17 @@ router.get("/", async (req, res) => {
     if (!users.length) {
       return res.status(404).json({
         success: false,
-        error: "No user found",
+        error: 'No user found',
       });
     }
     return res.status(200).json({
       success: true,
-      users: users
+      users: users,
     });
-  }).catch(err => console.log(err));
+  }).catch((err) => console.log(err));
 });
 
-
-
 module.exports = router;
-
-
 
 /****************************************************************************/
 // function isSameUser(req, res, next) {
