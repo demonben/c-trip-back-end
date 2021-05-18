@@ -57,6 +57,8 @@ const port = +process.env.PORT || 4000;
 
 const url = process.env.MONGO_URL;
 
+console.log(host, port, url);
+
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
