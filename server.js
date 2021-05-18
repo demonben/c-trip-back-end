@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 //   path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
 // });
 
-const result = require('dotenv').config({ silent: true });
+const result = require('dotenv').config({
+  path: path.join(__dirname, `./.env`),
+});
+
+// const result = require('dotenv').config({ silent: true });
 
 if (result.error) {
   throw new Error(result.error);
