@@ -128,4 +128,5 @@ async function getPropertiesDetails(
     callback(searchResult);
   });
 }
+
 exports.getPropertiesDetails = getPropertiesDetails;
