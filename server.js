@@ -43,7 +43,7 @@ app.use('/login', require('./routes/login'));
 app.use('/search', require('./routes/search'));
 
 const host = process.env.HOST;
-const port = +process.env.PORT;
+const port = +process.env.PORT || 4000;
 
 // postgrator
 //   .migrate()
