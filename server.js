@@ -59,14 +59,18 @@ const url = process.env.MONGO_URL;
 
 console.log(host, port, url);
 
-mongoose
-  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    app.listen(port, host, () => {
-      console.log(`Server is listening at http://${host}:${port}`);
-      console.log('MongoDB connected');
-    });
-  })
-  .catch(() => {
-    console.log('Fail to connect to DB!!!!');
-  });
+// mongoose
+//   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => {
+//     app.listen(port, host, () => {
+//       console.log(`Server is listening at http://${host}:${port}`);
+//       console.log('MongoDB connected');
+//     });
+//   })
+//   .catch(() => {
+//     console.log('Fail to connect to DB!!!!');
+//   });
+
+app.listen(port, host, () => {
+  console.log(`Server is listening at http://${host}:${port}`);
+});
