@@ -33,7 +33,7 @@ const router = express.Router();
 //   res.status(200).send({ user: results });
 // });
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
     const body = req.body;
 
     if (!body) {
@@ -97,11 +97,7 @@ router.get('/', async (req, res) => {
     }).catch(err => console.log(err))
 })
 
-
-
-
-
-router.get('/trip/:tripId', async(req, res) => {
+router.get('/trip/:tripId', auth, async(req, res) => {
     await Trip.findOne({ _id: req.params.tripId }, (err, trip) => {
         if (err) {
             return res
@@ -131,8 +127,7 @@ router.get('/trip/:tripId', async(req, res) => {
 })
 
 
-// need to fix it!
-router.get('/userTrips',async (req, res) => {
+router.post('/userTrips', auth, async (req, res) => {
     await Trip.find({ 'createdBy': { $eq: req.body.createdBy } }, (err, trip) => {
         console.log("REQ BODY USER Trips: ", req.body)
         if (err) {
