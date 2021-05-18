@@ -20,9 +20,9 @@ async function getSearchResult(place, checkIn, checkOut, adults1, callback) {
 
   req.end(async function (result) {
     if (result.error) callback(error);
-    const hotel = result.body.suggestions[1].entities;
+    const hotel = await result.body.suggestions[1].entities;
     if (hotel.length === 0) callback([]);
-    const amountToShow = 3;
+    const amountToShow = hotel.length < 3 ? hotel.length : 3;
     for (let i = 0; i < amountToShow; i++) {
       getPropertiesDetails(
         hotel[i].destinationId,

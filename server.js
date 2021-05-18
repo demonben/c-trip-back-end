@@ -57,18 +57,19 @@ const port = +process.env.PORT;
 
 const url = process.env.MONGO_URL;
 
-console.log(host, port, url);
-
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     app.listen(port, host, () => {
-      console.log(`Server is listening at http://${host}:${port}`);
-      console.log('MongoDB connected');
+      console.log(
+        `The server is listening at http://${host}:${port} and is connected to MongoDB`
+      );
     });
   })
   .catch(() => {
-    console.log('Fail to connect to DB!!!!');
+    console.log(
+      'Something went wrong. The server is not running and/or not connected to MongoDB!'
+    );
   });
 
 // app.listen(port, host, () => {
