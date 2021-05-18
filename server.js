@@ -41,6 +41,7 @@ app.use('/notes', require('./routes/notes'));
 app.use('/signup', require('./routes/signup'));
 app.use('/login', require('./routes/login'));
 app.use('/search', require('./routes/search'));
+app.use('/google', require('./routes/google'));
 
 const host = process.env.HOST;
 const port = +process.env.PORT;
