@@ -26,7 +26,7 @@ router.post("/", async (req, res, next) => {
 			email,
 		});
 		console.log(newUser);
-		res.send(newUser);
+		res.send({message: "user added", user: newUser});
 	} catch (error) {
 		console.log(error);
 	}
