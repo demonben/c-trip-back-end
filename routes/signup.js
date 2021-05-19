@@ -4,8 +4,6 @@ const User = require('../models/user-model');
 
 const router = express.Router();
 
-// implement when the user sign up with google --> the email has to be in the DB
-
 router.post("/", async (req, res, next) => {
 	const { firstName, lastName, email, password, phoneNumber } = req.body;
     const emailAlreadyExists = await User.findOne({ email: email });
