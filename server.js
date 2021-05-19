@@ -1,8 +1,6 @@
-const path = require('path');
+require('./lib/config');
+
 const mongoose = require('mongoose');
-const result = require('dotenv').config({
-  path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
-});
 
 // const result = require('dotenv').config({
 //   path: path.join(__dirname, `./.env`),
@@ -46,6 +44,8 @@ app.use('/google', require('./routes/google'));
 const host = process.env.HOST;
 const port = +process.env.PORT;
 
+module.exports = app;
+
 // postgrator
 //   .migrate()
 //   .then((result) => {
@@ -61,11 +61,13 @@ const url = process.env.MONGO_URL;
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    app.listen(port, host, () => {
-      console.log(
-        `The server is listening at http://${host}:${port} and is connected to MongoDB`
-      );
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(port, host, () => {
+        console.log(
+          `The server is listening at http://${host}:${port} and is connected to MongoDB`
+        );
+      });
+    }
   })
   .catch(() => {
     console.log(
