@@ -126,7 +126,7 @@ router.get('/trip/:tripId', auth, async (req, res) => {
   }).catch((err) => console.log(err));
 });
 
-router.post('/userTrips', auth, async (req, res) => {
+router.post('/userTrips', async (req, res) => {
   await Trip.find({ createdBy: { $eq: req.body.createdBy } }, (err, trip) => {
     console.log('REQ BODY USER Trips: ', req.body);
     if (err) {
