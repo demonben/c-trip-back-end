@@ -1,17 +1,11 @@
-require("../lib/config");
-const supertest = require("supertest");
-const { createProduct, deleteProduct } = require("../data/products");
-const {
-  addUser,
-  hashPassword,
-  generateUserToken,
-  deleteUser,
-} = require("../data/users");
-const app = require("../server");
-const faker = require("faker");
+require('../lib/config');
+const supertest = require('supertest');
+const { search } = require('../data/search');
+const app = require('../server');
+const faker = require('faker');
 
-describe("Products routes", () => {
-  describe("GET /products/:id", () => {
+describe('Products routes', () => {
+  describe('GET /products/:id', () => {
     const user = {
       email: faker.internet.email(),
       password: faker.internet.password(),
@@ -19,7 +13,7 @@ describe("Products routes", () => {
     const product = {
       name: faker.commerce.product(),
       price: 12,
-      category: "Category 1",
+      category: 'Category 1',
     };
     let token;
     beforeAll(async () => {
@@ -42,10 +36,10 @@ describe("Products routes", () => {
       await deleteUser(user.id);
     });
 
-    it("Should return a product", async () => {
+    it('Should return a product', async () => {
       const response = await supertest(app)
         .get(`/products/${product.id}`)
-        .set("Authorization", `Bearer ${token}`);
+        .set('Authorization', `Bearer ${token}`);
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({
         product: {
@@ -54,17 +48,17 @@ describe("Products routes", () => {
         },
       });
     });
-    it("Should return not found", async () => {
+    it('Should return not found', async () => {
       const response = await supertest(app)
         .get(`/products/12asdaw`)
-        .set("Authorization", `Bearer ${token}`);
+        .set('Authorization', `Bearer ${token}`);
       expect(response.statusCode).toBe(404);
     });
-    it("Should return unauthorized", async () => {
+    it('Should return unauthorized', async () => {
       const response = await supertest(app).get(`/products/${product.id}`);
       expect(response.statusCode).toBe(401);
     });
   });
-  describe("POST /products", () => {});
-  describe("GET /products", () => {});
+  describe('POST /products', () => {});
+  describe('GET /products', () => {});
 });
