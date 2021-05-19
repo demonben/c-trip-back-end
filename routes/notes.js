@@ -1,100 +1,50 @@
 const express = require('express');
-const { upload } = require('../middlewares/multipart');
 const { auth } = require('../middlewares/auth');
-const { uploadToCloudinary } = require('../lib/cloudinary');
-const fs = require('fs');
-const S = require('fluent-json-schema').default;
 const validateBody = require('../middlewares/validation');
 const router = express.Router();
+const Trip = require('../models/trip-model');
 
-// function isAdmin(req, res, next) {
-//   const userId = req.user.id;
-//   const admin = checkIfAdmin(userId);
-//   if (!admin) {
-//     res.status(403).send({
-//       message: 'Only administrators can perform this action',
-//     });
-//     return;
-//   }
-//   next();
-// }
+updateNote = async (req, res) => {
+    const body = req.body
+    console.log(body)
 
-// const NewPetValidationSchema = S.object()
-//   .prop('name', S.string().minLength(1).required())
-//   .prop('type', S.string().minLength(1).required())
-//   .prop('breed', S.string())
-//   .prop('height', S.number().minimum(0))
-//   .prop('weight', S.number().minimum(0))
-//   .prop('image', S.object())
-//   .prop('hypoallergenic', S.boolean())
-//   .prop('diet', S.string())
-//   .prop('bio', S.string())
-//   .prop('picture_url', S.string())
-//   .valueOf();
 
-// router.post(
-//   '/',
-//   auth,
-//   isAdmin,
-//   // validateBody(NewPetValidationSchema), // For some reason, this is not working :-(
-//   async (req, res, next) => {
-//     const {
-//       name,
-//       type,
-//       breed,
-//       color,
-//       height,
-//       weight,
-//       hypoallergenic,
-//       diet,
-//       bio,
-//       picture_url,
-//     } = req.body;
-//     try {
-//       await createPet(
-//         name,
-//         type,
-//         breed,
-//         color,
-//         height,
-//         weight,
-//         hypoallergenic,
-//         diet,
-//         bio,
-//         picture_url
-//       );
-//       res.status(201);
-//       res.send({
-//         pet: {
-//           name,
-//           type,
-//           breed,
-//           color,
-//           height,
-//           weight,
-//           hypoallergenic,
-//           diet,
-//           bio,
-//           picture_url,
-//         },
-//       });
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// );
+    if (!body || Object.keys(body).length === 0) {
+        return res.status(400).json({
+            success: false,
+            error: "No note information provided",
+        })
+    }
 
-// 4
-// router.post(
-//   '/picture_url',
-//   auth,
-//   isAdmin,
-//   upload.single('image'),
-//   async (req, res) => {
-//     const result = await uploadToCloudinary(req.file.path);
-//     fs.unlinkSync(req.file.path);
-//     res.status(201).send({ picture_url: result.secure_url });
-//   }
-// );
+    Trip.findOneAndUpdate({ _id: req.body.id }, { $set: req.body }, { useFindAndModify: false }, (err, trip) => { 
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: "Trip not found!",
+            })
+        }
+
+        if ('note' in req.body) trip.note = body.note;
+        
+        trip
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: trip._id,
+                    message: "Note updated!",
+                })
+            })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: "Note not updated!",
+                })
+            })
+    })
+}
+
+
+
 
 module.exports = router;

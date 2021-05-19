@@ -32,7 +32,8 @@ const router = express.Router();
 //   res.status(200).send({ user: results });
 // });
 
-router.post('/', auth, (req, res) => {
+// add auth !!!!
+router.post('/', (req, res) => {
   const body = req.body;
 
   if (!body) {
@@ -42,10 +43,19 @@ router.post('/', auth, (req, res) => {
     });
   }
 
+// name,
+// description,
+// image,
+// price,
+// startDate,
+// endDate,
+// note
+
   const trip = new Trip({
     name: req.body.name,
-    status: req.body.status, // upcoming or passed
-    reason: req.body.reason, // business or vacation
+    description: req.body.description, 
+    image: req.body.image,
+    price: req.body.price,
     startDate: req.body.startDate,
     endDate: req.body.endDate,
     note: req.body.note,
