@@ -1,64 +1,48 @@
 require('../lib/config');
 const supertest = require('supertest');
-const { search } = require('../data/search');
+const { getSearchResult } = require('../data/search');
 const app = require('../server');
 const faker = require('faker');
 
-describe('Products routes', () => {
-  describe('GET /products/:id', () => {
-    const user = {
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
-    const product = {
-      name: faker.commerce.product(),
-      price: 12,
-      category: 'Category 1',
-    };
-    let token;
-    beforeAll(async () => {
-      const passwordHash = await hashPassword(user.password);
-      const userId = await addUser(user.email, passwordHash);
-      user.id = userId;
-      token = generateUserToken(user);
-      const { id, createdDate } = await createProduct(
-        product.name,
-        product.price,
-        product.category,
-        userId
-      );
-      product.id = id;
-      product.created_date = createdDate.toISOString();
-    });
+describe('Search route', () => {
+  jest.setTimeout(30000);
+  describe('/?query', () => {
+    const checkInDate = '2021-06-03';
+    const checkOutDate = '2021-06-05';
 
-    afterAll(async () => {
-      await deleteProduct(product.id);
-      await deleteUser(user.id);
-    });
+    const query = `place=${faker.address.city()}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adults1=${faker.datatype.number()}`;
+    console.log(query);
 
-    it('Should return a product', async () => {
-      const response = await supertest(app)
-        .get(`/products/${product.id}`)
-        .set('Authorization', `Bearer ${token}`);
+    // beforeAll(async () => {
+    //   // const passwordHash = await hashPassword(user.password);
+    //   // const userId = await addUser(user.email, passwordHash);
+    //   // user.id = userId;
+    //   // token = generateUserToken(user);
+    //   const { results } = await getSearchResult(
+    //     query.place,
+    //     query.checkIn,
+    //     query.checkOut,
+    //     query.adults1
+    //   );
+    // });
+
+    it('Should return hotel(s)', async () => {
+      const response = await supertest(app).get(`/search?${query}`);
       expect(response.statusCode).toBe(200);
-      expect(response.body).toEqual({
-        product: {
-          ...product,
-          userId: user.id,
-        },
-      });
+      // expect(response.body).toEqual({
+      //   results: {
+      //     ...result,
+      //   },
+      // });
     });
-    it('Should return not found', async () => {
-      const response = await supertest(app)
-        .get(`/products/12asdaw`)
-        .set('Authorization', `Bearer ${token}`);
-      expect(response.statusCode).toBe(404);
-    });
-    it('Should return unauthorized', async () => {
-      const response = await supertest(app).get(`/products/${product.id}`);
-      expect(response.statusCode).toBe(401);
-    });
+    // it('Should return empty array if not found', async () => {
+    //   const response = await supertest(app).get(`/?${query}`);
+    //   expect(response.statusCode).toBe(200);
+    //   expect(response.body).toEqual({
+    //     results: [],
+    //   });
+    // });
   });
-  describe('POST /products', () => {});
-  describe('GET /products', () => {});
+
+  describe('GET /?', () => {});
 });

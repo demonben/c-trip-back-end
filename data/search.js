@@ -19,7 +19,9 @@ async function getSearchResult(place, checkIn, checkOut, adults1, callback) {
   });
 
   req.end(async function (result) {
-    if (result.error) callback(error);
+    // if (result.error) callback(error);
+    // if (result.error) console.log(error);
+    if (result.error) throw new Error(result.error);
     const hotel = await result.body.suggestions[1].entities;
     if (hotel.length === 0) callback([]);
     const amountToShow = hotel.length < 3 ? hotel.length : 3;
