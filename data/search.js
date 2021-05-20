@@ -108,6 +108,13 @@ async function getPropertiesDetails(
       const address =
         res.body.data.body.propertyDescription.address.fullAddress;
       const tagLine = res.body.data.body.propertyDescription.tagline[0];
+
+      function strip(html) {
+        html = html.replace(/<b>/g, '');
+        html = html.replace(/<\/b>/g, '');
+        return html;
+      }
+
       const rating = res.body.data.body.propertyDescription.starRating;
       let price;
       let priceInfo;
