@@ -14,8 +14,7 @@ router.post("/", async (req, res, next) => {
     // }
     // if ( emailAlreadyExists ) {
     //     return res.status(400).send({
-    //         success: false,
-    //         error: 'An account with this email address already exists. The user is already in the DB'
+    //         message: 'An account with this email address already exists. The user is already in the DB'
     //     })
     // }
 

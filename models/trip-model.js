@@ -3,12 +3,12 @@ const Schema = mongoose.Schema
 
 const tripSchema = new Schema(
     {
-        name: { type: String, required: true },
-        description: { type: String, required: true },
-        image: { type: String, required: true }, 
-        price: { type: String, required: true },
-        startDate: { type: String, required: true },
-        endDate: { type: String, required: true },
+        name: { type: String, required: false },
+        description: { type: String, required: false },
+        image: { type: String, required: false }, 
+        price: { type: String, required: false },
+        startDate: { type: String, required: false },
+        endDate: { type: String, required: false },
         note: { type: String, required: false },
         createdBy: { type: String, required: true },
     },
