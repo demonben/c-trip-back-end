@@ -1,6 +1,5 @@
 const express = require('express');
 const { getSearchResult } = require('../data/search');
-const { upload } = require('../middlewares/multipart');
 const { auth } = require('../middlewares/auth');
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1621495641534" clover="3.2.0">
-  <project timestamp="1621495641534" name="All files">
-    <metrics statements="278" coveredstatements="137" conditionals="78" coveredconditionals="4" methods="49" coveredmethods="11" elements="405" coveredelements="152" complexity="0" loc="278" ncloc="278" packages="6" files="15" classes="15"/>
+<coverage generated="1621496506041" clover="3.2.0">
+  <project timestamp="1621496506042" name="All files">
+    <metrics statements="278" coveredstatements="119" conditionals="78" coveredconditionals="4" methods="49" coveredmethods="6" elements="405" coveredelements="129" complexity="0" loc="278" ncloc="278" packages="6" files="15" classes="15"/>
     <package name="ctrip-back-end">
       <metrics statements="29" coveredstatements="26" conditionals="2" coveredconditionals="1" methods="4" coveredmethods="2"/>
       <file name="server.js" path="/Users/avior/DEV/ITC/Repos/ctrip-back-end/server.js">
@@ -38,9 +38,9 @@
       </file>
     </package>
     <package name="ctrip-back-end.data">
-      <metrics statements="51" coveredstatements="34" conditionals="12" coveredconditionals="3" methods="9" coveredmethods="8"/>
+      <metrics statements="51" coveredstatements="15" conditionals="12" coveredconditionals="3" methods="9" coveredmethods="2"/>
       <file name="search.js" path="/Users/avior/DEV/ITC/Repos/ctrip-back-end/data/search.js">
-        <metrics statements="51" coveredstatements="34" conditionals="12" coveredconditionals="3" methods="9" coveredmethods="8"/>
+        <metrics statements="51" coveredstatements="15" conditionals="12" coveredconditionals="3" methods="9" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
@@ -54,29 +54,29 @@
         <line num="26" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="27" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="28" count="1" type="stmt"/>
-        <line num="29" count="3" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
         <line num="35" count="0" type="stmt"/>
         <line num="36" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="43" count="1" type="stmt"/>
-        <line num="52" count="3" type="stmt"/>
-        <line num="53" count="3" type="stmt"/>
-        <line num="54" count="3" type="stmt"/>
-        <line num="59" count="3" type="stmt"/>
-        <line num="63" count="3" type="stmt"/>
-        <line num="69" count="3" type="stmt"/>
-        <line num="70" count="3" type="stmt"/>
-        <line num="71" count="3" type="stmt"/>
-        <line num="72" count="3" type="stmt"/>
-        <line num="73" count="3" type="stmt"/>
-        <line num="74" count="122" type="stmt"/>
-        <line num="76" count="3" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
         <line num="79" count="0" type="stmt"/>
-        <line num="83" count="3" type="stmt"/>
-        <line num="87" count="3" type="stmt"/>
-        <line num="88" count="3" type="stmt"/>
-        <line num="97" count="3" type="stmt"/>
-        <line num="103" count="3" type="stmt"/>
-        <line num="104" count="1" type="cond" truecount="0" falsecount="2"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="103" count="0" type="stmt"/>
+        <line num="104" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="105" count="0" type="stmt"/>
         <line num="107" count="0" type="stmt"/>
         <line num="108" count="0" type="stmt"/>
@@ -165,7 +165,7 @@
       </file>
     </package>
     <package name="ctrip-back-end.routes">
-      <metrics statements="155" coveredstatements="55" conditionals="58" coveredconditionals="0" methods="30" coveredmethods="1"/>
+      <metrics statements="155" coveredstatements="56" conditionals="58" coveredconditionals="0" methods="30" coveredmethods="2"/>
       <file name="google.js" path="/Users/avior/DEV/ITC/Repos/ctrip-back-end/routes/google.js">
         <metrics statements="12" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -226,7 +226,7 @@
         <line num="48" count="1" type="stmt"/>
       </file>
       <file name="search.js" path="/Users/avior/DEV/ITC/Repos/ctrip-back-end/routes/search.js">
-        <metrics statements="12" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <metrics statements="12" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -236,7 +236,7 @@
         <line num="10" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
         <line num="26" count="1" type="stmt"/>
       </file>

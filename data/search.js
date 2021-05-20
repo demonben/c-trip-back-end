@@ -70,9 +70,11 @@ async function getPropertiesDetails(
     try {
       setTimeout(async function () {
         const result = await res.body;
-        const images = await result.hotelImages.forEach(
-          (image) => imageArray.push(image.baseUrl.replace('{size}', 'z')) // Result: the hotel/destinationId's
-        );
+        if (result.hotelImages) {
+          const images = await result.hotelImages.forEach(
+            (image) => imageArray.push(image.baseUrl.replace('{size}', 'z')) // Result: the hotel/destinationId's
+          );
+        }
         imageArray = imageArray;
       }, 500);
     } catch (error) {
