@@ -104,17 +104,15 @@ async function getPropertiesDetails(
 
     req.end(function (res) {
       if (res.error) throw new Error(res.error);
-      const name = res.body.data.body.propertyDescription.name;
-      const address =
-        res.body.data.body.propertyDescription.address.fullAddress;
-      const tagLine = res.body.data.body.propertyDescription.tagline[0];
-
       function strip(html) {
         html = html.replace(/<b>/g, '');
         html = html.replace(/<\/b>/g, '');
         return html;
       }
-
+      const name = res.body.data.body.propertyDescription.name;
+      const address =
+        res.body.data.body.propertyDescription.address.fullAddress;
+      const tagLine = strip(res.body.data.body.propertyDescription.tagline[0]);
       const rating = res.body.data.body.propertyDescription.starRating;
       let price;
       let priceInfo;
