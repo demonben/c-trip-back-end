@@ -10,7 +10,7 @@ describe('Search route', () => {
     const checkInDate = '2021-06-03';
     const checkOutDate = '2021-06-05';
 
-    const query = `place=${faker.address.city()}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adults1=${faker.datatype.number()}`;
+    const query = `place=${faker.address.city()}&checkIn=${checkInDate}&checkOut=${checkOutDate}&adults1=1`;
     console.log(query);
 
     // beforeAll(async () => {
@@ -26,22 +26,16 @@ describe('Search route', () => {
     //   );
     // });
 
+    afterAll(async () => {
+      await supertest(app).close();
+      await mongoose.disconnect();
+    });
+
     it('Should return hotel(s)', async () => {
       const response = await supertest(app).get(`/search?${query}`);
       expect(response.statusCode).toBe(200);
-      // expect(response.body).toEqual({
-      //   results: {
-      //     ...result,
-      //   },
-      // });
+      // expect(response.body).toBe({ results: '*' });
     });
-    // it('Should return empty array if not found', async () => {
-    //   const response = await supertest(app).get(`/?${query}`);
-    //   expect(response.statusCode).toBe(200);
-    //   expect(response.body).toEqual({
-    //     results: [],
-    //   });
-    // });
   });
 
   describe('GET /?', () => {});

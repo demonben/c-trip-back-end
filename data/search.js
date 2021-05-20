@@ -101,7 +101,7 @@ async function getPropertiesDetails(
     });
 
     req.end(function (res) {
-      if (res.error) callback(error);
+      if (result.error) throw new Error(result.error);
       const name = res.body.data.body.propertyDescription.name;
       const address =
         res.body.data.body.propertyDescription.address.fullAddress;
